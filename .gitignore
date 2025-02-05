@@ -1,0 +1,8 @@
+# Ignorar archivos de socket de MySQL
+mysql_data/mysql.sock
+
+# Ignorar otros archivos temporales y directorios
+node_modules/
+*.log
+*.pid
+*.swp

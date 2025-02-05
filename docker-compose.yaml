@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+##SERVICIO DE BASE DE DATOS MYSQL##
+  mysql_db:
+    container_name: mysql
+    image: mysql:latest
+    volumes:
+      - ./dbfiles:/docker-entrypoint-initdb.d  
+      - ./mysql_data:/var/lib/mysql            
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: qwerty
+    ports:
+      - 3308:3306  
+
+  ##SERVICIO DE ADMINISTRADOR GRAFICO DE LA BASE DE DATOS##
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: mysql_db      
+      PMA_USER: mysql
+      PMA_PASSWORD: qwerty
+    ports:
+      - 80:80
+    depends_on:
+      - mysql_db
