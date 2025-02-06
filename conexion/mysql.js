@@ -1,4 +1,11 @@
 const mysql = require("mysql2/promise"); 
+const { Sequelize } = require("sequelize");
+
+
+const sequelize = new Sequelize('mysql://mysql:qwerty@localhost:3308/ticketreserve', {
+  dialect: 'mysql',
+  logging: false,
+});
 
 const connectDB = async () => {
 
@@ -22,4 +29,5 @@ const connectDB = async () => {
 
 module.exports = {
   connectDB,
+  sequelize
 };

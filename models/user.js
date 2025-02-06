@@ -1,7 +1,9 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize("sqlite::memory:");
+const { DataTypes } = require("sequelize");
+const { sequelize } = require('../conexion/mysql'); 
 
-const User = sequelize.define("User", {
+
+
+const user = sequelize.define("usuarios", {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -10,10 +12,22 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  correo: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
 
-console.log(User === sequelize.models.User);
+sequelize.sync()
+  .then(() => {
+    console.log("La base de datos ha sido sincronizada.");
+  })
+  .catch((error) => {
+    console.error("No se pudo sincronizar la base de datos", error);
+  });
+
+module.exports = { sequelize, user };
