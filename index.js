@@ -11,9 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 
 
 const userRoutes = require("./routes/user");
+const filmRoutes = require("./routes/film");
+
 
 
 app.use("/user", userRoutes);
+app.use("/film", filmRoutes);
 
 
 connectDB();

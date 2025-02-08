@@ -1,7 +1,12 @@
-const { user } = require("../models/user"); 
+const { user } = require("../models/user");
+const bcrypt = require("bcrypt");
+const jwt = require("../services/jwt");
 
-const create = async (req, res) => {
+const register = async (req, res) => {
   const params = req.body;
+
+  const hashedPassword = await bcrypt.hash(params.password, 10);
+  params.password = hashedPassword;
 
   try {
     const userToSave = await user.create(params);
@@ -45,39 +50,77 @@ const list = async (req, res) => {
   }
 };
 
-const getById = async (req, res) => {
-  let id = req.params.id;
+const login = async (req, res) => {
+  let userToLogin = req.body;
 
-  try {
-    let userToFind = await user.findOne({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!userToFind) {
-      return res.status(400).send({
-        status: "error",
-        message: "Error, el usuario no existe",
-      });
-    }
-
-    return res.status(200).send({
-      status: "success",
-      message: "Usuario encontrado con éxito",
-      user: userToFind,
-    });
-  } catch (error) {
-    return res.status(500).send({
+  if (!userToLogin.email || !userToLogin.password) {
+    return res.status(400).send({
       status: "error",
-      message: "Error al cargar al usuario",
-      error: error.message,
+      message: "Faltan datos de login (email o contraseña)",
     });
   }
+
+  let userToFind = await user.findOne({
+    where: {
+      email: userToLogin.email,
+    },
+  });
+
+  if (!userToFind) {
+    return res.status(400).send({
+      status: "error",
+      message: "Error, el usuario no existe",
+    });
+  }
+
+  const pwd = bcrypt.compareSync(userToLogin.password, userToFind.password);
+
+  if (!pwd) {
+    return res
+      .status(400)
+      .send({ status: "error", message: "Credenciales incorrectas" });
+  }
+
+  const token = jwt.createToken(userToFind);
+
+  return res.status(200).send({
+    status: "success",
+    message: "Iniciaste sesión con éxito",
+    user: userToFind,
+    token: token,
+  });
+};
+
+const getUser = async (req, res) => {
+  let userMe = req.user;
+
+  return res.status(200).send({
+    status: "success",
+    message: "Usuario encontrado con éxito",
+    user: userMe,
+  });
+};
+
+const update = async (req, res) => {
+  let userMe = req.user;
+
+  let userToUpdate = req.body;
+
+  const updatedUser = await user.update(userToUpdate, {
+    where: { id: userMe.id },
+  });
+
+  return res.status(200).send({
+    status: "success",
+    message: "Se actualizo el usuario con éxito",
+    userUpdate: userToUpdate,
+  });
 };
 
 module.exports = {
-  create,
+  register,
   list,
-  getById,
+  login,
+  getUser,
+  update,
 };
