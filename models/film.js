@@ -22,12 +22,5 @@ const film = sequelize.define("peliculas", {
   }
 });
 
-sequelize.sync({ alter: true }) 
-  .then(() => {
-    console.log("La base de datos ha sido sincronizada con cambios.");
-  })
-  .catch((error) => {
-    console.error("No se pudo sincronizar la base de datos", error);
-  });
 
 module.exports = { sequelize, film };

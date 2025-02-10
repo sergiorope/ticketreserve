@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/film");
+const filmController = require("../controllers/film");
 
 
-router.get("/list", userController.list);
+router.get("/list", filmController.list);
 
 
 
