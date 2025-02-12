@@ -12,7 +12,8 @@
         "mysql_data": true,
         "node_modules": true,
         ".gitignore": true,
-        "**/.gitignore": true
+        "**/.gitignore": true,
+        "modelo_er": true
     },
     "explorerExclude.backup": {}
 }

@@ -30,6 +30,33 @@ const list = async (req, res) => {
   });
 };
 
+const update = async (req, res) => {
+  try {
+    let seatToUpdate = req.body;
+
+    const seatFind = await seat.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    const seatUpdated = await seatFind.update(seatToUpdate);
+
+    return res.status(200).send({
+      status: "success",
+      message: "Se actualizo la butaca con exito",
+      seatUpdated,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: "error",
+      message: "Error, no se actualizar la butaca",
+      error,
+    });
+  }
+};
+
 module.exports = {
   list,
+  update,
 };

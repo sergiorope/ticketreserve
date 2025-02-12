@@ -25,31 +25,6 @@ const register = async (req, res) => {
   }
 };
 
-const list = async (req, res) => {
-  try {
-    const users = await user.findAll();
-
-    if (!users) {
-      return res.status(500).send({
-        status: "error",
-        message: "Error, no hay ningún usuario",
-      });
-    }
-
-    return res.status(201).send({
-      status: "success",
-      message: "Lista de todos los usuarios con éxito",
-      user: users,
-    });
-  } catch (error) {
-    return res.status(500).send({
-      status: "error",
-      message: "Error al cargar a todos los usuarios",
-      error: error.message,
-    });
-  }
-};
-
 const login = async (req, res) => {
   let userToLogin = req.body;
 
@@ -91,16 +66,6 @@ const login = async (req, res) => {
   });
 };
 
-const getUser = async (req, res) => {
-  let userMe = req.user;
-
-  return res.status(200).send({
-    status: "success",
-    message: "Usuario encontrado con éxito",
-    user: userMe,
-  });
-};
-
 const update = async (req, res) => {
   let userMe = req.user;
 
@@ -113,14 +78,14 @@ const update = async (req, res) => {
   return res.status(200).send({
     status: "success",
     message: "Se actualizo el usuario con éxito",
-    userUpdate: userToUpdate,
+    userUpdate: updatedUser,
   });
 };
 
 module.exports = {
   register,
-  list,
+
   login,
-  getUser,
+
   update,
 };
