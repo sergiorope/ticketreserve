@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, STRING } = require("sequelize");
 const { sequelize } = require('../conexion/mysql'); 
 
 
@@ -19,6 +19,10 @@ const film = sequelize.define("peliculas", {
   director: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  imageUrl: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 });
 

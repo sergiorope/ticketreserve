@@ -17,6 +17,11 @@ const list = async (req, res) => {
           attributes: ["name"],
         },
         {
+        model: film,
+        as: "pelicula",
+        attributes: ["imageUrl"],
+        },
+        {
           model: screen,
           as: "sala",
           attributes: ["name"],

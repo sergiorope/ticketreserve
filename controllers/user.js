@@ -82,10 +82,23 @@ const update = async (req, res) => {
   });
 };
 
+const userInfo = (req, res) => {
+  const token = req.body.token;
+
+  const userToken = jwt.decodeToken(token);
+
+  return res.status(200).send({
+    status: "success",
+    userToken,
+  });
+};
+
 module.exports = {
   register,
 
   login,
 
   update,
+
+  userInfo,
 };
