@@ -5,12 +5,31 @@ const jwt = require("../services/jwt");
 const register = async (req, res) => {
   const params = req.body;
 
+  try{
+
+
+    let userToFind = await user.findOne({
+      where: {
+        email: params.email,
+      },
+    });
+
+    if(userToFind){
+
+      return res.status(400).send({
+        status: "error",
+        message: "Error, ese correo ya esta en uso.",
+    
+      });
+    }
+
   const hashedPassword = await bcrypt.hash(params.password, 10);
   params.password = hashedPassword;
 
-  try {
-    const userToSave = await user.create(params);
+  const userToSave = await user.create(params);
 
+
+    
     return res.status(201).send({
       status: "success",
       message: "Usuario creado con éxito",

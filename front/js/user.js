@@ -1,80 +1,64 @@
 const userInfo = "http://localhost:3800/user/info";
-
 const token = localStorage.getItem("authToken");
 
 const welcomeContainer = document.getElementById("welcome");
 const logContainer = document.getElementById("log");
-const infoUserContainer = document.getElementById("info");
-
+const infoUserName = document.getElementById("infoName");
+const infoUserSurname = document.getElementById("infoSurname");
+const infoUserEmail = document.getElementById("infoEmail");
 
 const infoUser = async () => {
     if (!token) {
-      console.log("El usuario no está autenticado.");
-      const login = document.createElement("a");
-      login.className = "nav-link";
-      login.href = "./login.html";
-      login.textContent = "Login";
-      logContainer.appendChild(login);
-      return;
+        console.log("El usuario no está autenticado.");
+        const login = document.createElement("a");
+        login.className = "nav-link";
+        login.href = "./login.html";
+        login.textContent = "Login";
+        logContainer.appendChild(login);
+        return;
     }
-  
+
     try {
-      const response = await fetch(userInfo, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Error en la respuesta del servidor.");
-      }
-  
-      const dataResponse = await response.json();
-  
-      const welcome = document.createElement("a");
-      const logout = document.createElement("a");
+        const response = await fetch(userInfo, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+        });
 
-      const name = document.createElement("p");
-      const surname = document.createElement("p");
-      const email = document.createElement("p");
+        if (!response.ok) {
+            throw new Error("Error en la respuesta del servidor.");
+        }
 
+        const dataResponse = await response.json();
 
+        const welcome = document.createElement("a");
 
+        const name = document.createElement("p");
+        const surname = document.createElement("p");
+        const email = document.createElement("p");
 
-      name.textContent = "Nombre: "+dataResponse.userToken.name;
-      surname.textContent = "Apellidos: "+dataResponse.userToken.surname;
-      email.textContent = "Email: "+dataResponse.userToken.email;
+        name.textContent = "Nombre: " + dataResponse.userToken.name;
+        surname.textContent = "Apellidos: " + dataResponse.userToken.surname;
+        email.textContent = "Email: " + dataResponse.userToken.email;
 
-  
-      
-  
-      welcome.className = "nav-link";
-      welcome.href = "./user.html";
-      welcome.textContent = "Bienvenido, " + dataResponse.userToken.name;
-  
-      logout.className = "nav-link";
-      logout.id = "logout";
-      logout.href = "#";
-      logout.textContent = "Logout";
-  
-      welcomeContainer.appendChild(welcome);
-      logContainer.appendChild(logout);
-      infoUserContainer.appendChild(name);
-      infoUserContainer.appendChild(surname);
-      infoUserContainer.appendChild(email);
+        name.className = "h5 text-dark font-weight-bold mb-3";  
+        surname.className = "h5 text-dark font-weight-bold mb-3";
+        email.className = "h5 text-dark font-weight-bold mb-3";
 
-  
-  
-  
-      logout.addEventListener("click", function (event) {
-        localStorage.removeItem("authToken");
-        location.reload();
-      });
+        welcome.className = "nav-link";  
+        welcome.href = "./user.html";
+        welcome.textContent = "Bienvenido, " + dataResponse.userToken.name;
+
+        welcomeContainer.appendChild(welcome);
+        infoUserName.appendChild(name);
+        infoUserSurname.appendChild(surname);
+        infoUserEmail.appendChild(email);
+
     } catch (error) {
-      console.log("Error al obtener información del usuario:", error);
+        console.log("Error al obtener información del usuario:", error);
     }
-  };
+};
 
-  infoUser();
+infoUser();

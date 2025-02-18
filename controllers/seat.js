@@ -30,6 +30,43 @@ const list = async (req, res) => {
   });
 };
 
+
+const listByScreen = async (req, res) => {
+  try {
+    const { id_Sala } = req.params; 
+
+    const listSeat = await seat.findAll({
+      where: { id_Sala }, 
+
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+
+    });
+
+    if (!listSeat || listSeat.length === 0) {
+      return res.status(404).send({
+        status: "error",
+        message: "No hay butacas para esta sala",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: listSeat,
+    });
+
+  } catch (error) {
+    return res.status(500).send({
+      status: "error",
+      message: "Error interno del servidor",
+      error: error.message,
+    });
+  }
+};
+
+
+
 const update = async (req, res) => {
   try {
     let seatToUpdate = req.body;
@@ -56,7 +93,10 @@ const update = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   list,
   update,
+  listByScreen
 };

@@ -24,7 +24,7 @@ const list = async (req, res) => {
         {
           model: screen,
           as: "sala",
-          attributes: ["name"],
+          attributes: ["id","name"],
         },
       ],
     });

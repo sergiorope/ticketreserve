@@ -3,6 +3,7 @@ document
   .addEventListener("submit", function (event) {
     event.preventDefault();
     const register = "http://localhost:3800/user/register";
+    const containerMessage = document.getElementById("containerMessage");
 
     const create = async () => {
       const data = {
@@ -21,6 +22,22 @@ document
       });
 
       if (!response.ok) {
+        const errorResponse = await response.json();
+        const errorMessage =
+          errorResponse.message || "Ocurrió un error inesperado.";
+
+        const error = document.createElement("p");
+        error.textContent = errorMessage;
+        error.style.color = "red";
+        error.style.fontWeight = "bold";
+        error.style.marginTop = "10px";
+
+        containerMessage.appendChild(error);
+
+        setTimeout(() => {
+          containerMessage.removeChild(error);
+        }, 5000);
+
         throw new Error("La petición no obtuvo respuesta");
       }
     };

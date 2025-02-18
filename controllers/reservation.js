@@ -1,5 +1,7 @@
 const { reservation } = require("../models/reservation");
 const moment = require("moment");
+const jwt = require("../services/jwt");
+
 
 const { user } = require("../models/user");
 const { seat } = require("../models/seat");
@@ -52,9 +54,43 @@ const list = async (req, res) => {
   });
 };
 
+const listByProjections = async (req, res) => {
+  try {
+    const { id_Proyeccion } = req.params; 
+
+    const listReservations = await reservation.findAll({
+      where: { id_Proyeccion }, 
+
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+
+    });
+
+    if (!listReservations || listReservations.length === 0) {
+      return res.status(404).send({
+        status: "error",
+        message: "No hay reservas para esa proyección",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: listReservations,
+    });
+
+  } catch (error) {
+    return res.status(500).send({
+      status: "error",
+      message: "Error interno del servidor",
+      error: error.message,
+    });
+  }
+};
+
 const create = async (req, res) => {
   try {
-    const userParams = req.user;
+    const userParams = jwt.decodeToken(req.body.token);
     const seatParams = req.body.id_Butaca;
     const projectionParams = req.body.id_Proyeccion;
 
@@ -62,6 +98,22 @@ const create = async (req, res) => {
       return res.status(400).send({
         status: "error",
         message: "Faltan datos para crear la reserva",
+      });
+    }
+
+    const listReservationByProjection = await reservation.findAll({
+      where: { id_Proyeccion: projectionParams },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+
+    const userHasReservation = listReservationByProjection.some(
+      (item) => item.id_Usuario === userParams.id
+    );
+
+    if (userHasReservation) {
+      return res.status(400).send({
+        status: "error",
+        message: "Error, ya tienes una reserva para esta proyección.",
       });
     }
 
@@ -77,6 +129,7 @@ const create = async (req, res) => {
       message: "Reserva creada exitosamente",
       newReservation,
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).send({
@@ -86,6 +139,7 @@ const create = async (req, res) => {
     });
   }
 };
+
 
 const update = async (req, res) => {
   try {
@@ -151,4 +205,5 @@ module.exports = {
   create,
   update,
   eliminacion,
+  listByProjections
 };

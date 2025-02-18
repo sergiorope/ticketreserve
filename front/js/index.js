@@ -1,8 +1,20 @@
 const getFilm = "http://localhost:3800/projection/list";
 const userInfo = "http://localhost:3800/user/info";
+const token = localStorage.getItem("authToken");
 
 const welcomeContainer = document.getElementById("welcome");
 const logContainer = document.getElementById("log");
+
+const titulo = document.querySelector("h1");
+
+titulo.style.color = "#ffcc00";
+titulo.style.fontSize = "3rem";
+titulo.style.fontWeight = "bold";
+titulo.style.fontFamily = "Arial, sans-serif";
+titulo.style.textShadow = "3px 3px 10px rgba(255, 204, 0, 0.5)";
+titulo.style.textAlign = "center";
+titulo.style.padding = "20px";
+titulo.style.backgroundColor = "#758391";
 
 const list = async () => {
   try {
@@ -23,6 +35,28 @@ const list = async () => {
       const contenedor = document.createElement("div");
       contenedor.className = "filmItem";
       contenedor.style.margin = "5%";
+      contenedor.style.transition = "transform 0.2s ease-in-out";
+      contenedor.id = "contenedorProjection";
+
+      contenedor.addEventListener("mouseover", () => {
+        contenedor.style.transform = "scale(1.1)";
+      });
+
+      contenedor.addEventListener("mouseout", () => {
+        contenedor.style.transform = "scale(1)";
+      });
+
+      contenedor.addEventListener("click", function () {
+        const sala = encodeURIComponent(item.sala.id);
+        const salaName = encodeURIComponent(item.sala.name);
+        const proyeccionStr = encodeURIComponent(JSON.stringify(item));
+
+        if (!token) {
+          window.location.href = `./login.html`;
+        } else {
+          window.location.href = `./screen.html?sala=${sala}&&proyeccion=${proyeccionStr}&&salaName=${salaName}`;
+        }
+      });
 
       const horario = document.createElement("p");
       horario.textContent = "Horario: " + item.horario;
@@ -40,10 +74,9 @@ const list = async () => {
 
       const image = document.createElement("img");
       image.src = item.pelicula.imageUrl;
-      image.style.width = "100%";
-      image.style.height = "200px";
-      image.style.objectFit = "cover";
-      image.style.borderBottom = "1px solid #ddd";
+      image.style.display = "block";
+      image.style.marginLeft = "auto";
+      image.style.marginRight = "auto";
 
       const sala = document.createElement("p");
       sala.textContent = "Sala: " + item.sala.name;
@@ -62,8 +95,6 @@ const list = async () => {
     console.error("There was a problem with the fetch operation:", error);
   }
 };
-
-const token = localStorage.getItem("authToken");
 
 const infoUser = async () => {
   if (!token) {
