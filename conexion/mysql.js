@@ -1,32 +1,34 @@
-const mysql = require("mysql2/promise"); 
+const mysql = require("mysql2/promise");
 const { Sequelize } = require("sequelize");
 
-
-const sequelize = new Sequelize('mysql://mysql:qwerty@localhost:3308/ticketreserve', {
+const sequelize = new Sequelize('mysql://mysql:qwerty@mysql_db:3306/ticketreserve', {
   dialect: 'mysql',
   logging: false,
 });
 
-const connectDB = async () => {
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  try {
-    const connection = await mysql.createConnection({
-      host: "localhost",      
-      user: "mysql",          
-      password: "qwerty",    
-      database: "ticketreserve", 
-      port: 3308,             
-    });
-
-    console.log("Conexión exitosa a la base de datos de TicketReserve.");
-    return connection; 
-
-  } catch (error) {
-    console.error("Error al conectar a la base de datos de TicketReserve:", error);
-    throw error; 
+const connectDB = async (maxRetries = 5) => {
+  let retries = 0;
+  while (retries < maxRetries) {
+    try {
+      const connection = await mysql.createConnection({
+        host: "mysql_db",
+        user: "mysql",
+        password: "qwerty",
+        database: "ticketreserve",
+        port: 3306,
+      });
+      console.log("Conexión exitosa a la base de datos de TicketReserve.");
+      return connection;
+    } catch (error) {
+      console.error(`Error al conectar (intento ${retries + 1}): ${error.message}`);
+      retries++;
+      await sleep(5000); 
+    }
   }
+  throw new Error("No se pudo conectar a la base de datos después de varios intentos.");
 };
-
 
 sequelize.sync()
   .then(() => {

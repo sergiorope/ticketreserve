@@ -43,9 +43,9 @@ const infoUser = async () => {
         surname.textContent = "Apellidos: " + dataResponse.userToken.surname;
         email.textContent = "Email: " + dataResponse.userToken.email;
 
-        name.className = "h5 text-dark font-weight-bold mb-3";  
-        surname.className = "h5 text-dark font-weight-bold mb-3";
-        email.className = "h5 text-dark font-weight-bold mb-3";
+        name.className = "h5 text-dark font-weight-bold mb-4";  
+        surname.className = "h5 text-dark font-weight-bold mb-4";
+        email.className = "h5 text-dark font-weight-bold mb-4";
 
         welcome.className = "nav-link";  
         welcome.href = "./user.html";

@@ -1,35 +1,36 @@
 const { user } = require("../models/user");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs"); 
 const jwt = require("../services/jwt");
 
 const register = async (req, res) => {
   const params = req.body;
 
-  try{
-
-
+  try {
     let userToFind = await user.findOne({
       where: {
         email: params.email,
       },
     });
 
-    if(userToFind){
-
+    if (!params.name || !params.surname || !params.email || !params.password) {
       return res.status(400).send({
         status: "error",
-        message: "Error, ese correo ya esta en uso.",
-    
+        message: "Error, los campos no pueden estar vacíos.",
       });
     }
 
-  const hashedPassword = await bcrypt.hash(params.password, 10);
-  params.password = hashedPassword;
+    if (userToFind) {
+      return res.status(400).send({
+        status: "error",
+        message: "Error, ese correo ya esta en uso.",
+      });
+    }
 
-  const userToSave = await user.create(params);
+    const hashedPassword = await bcrypt.hash(params.password, 10); 
+    params.password = hashedPassword;
 
+    const userToSave = await user.create(params);
 
-    
     return res.status(201).send({
       status: "success",
       message: "Usuario creado con éxito",
@@ -63,16 +64,15 @@ const login = async (req, res) => {
   if (!userToFind) {
     return res.status(400).send({
       status: "error",
-      message: "Error, el usuario no existe",
+      message: "Error, no existe un usuario con ese email",
     });
   }
 
-  const pwd = bcrypt.compareSync(userToLogin.password, userToFind.password);
-
+  const pwd = bcrypt.compareSync(userToLogin.password, userToFind.password); 
   if (!pwd) {
     return res
       .status(400)
-      .send({ status: "error", message: "Credenciales incorrectas" });
+      .send({ status: "error", message: "Error, credenciales incorrectas." });
   }
 
   const token = jwt.createToken(userToFind);
@@ -114,10 +114,7 @@ const userInfo = (req, res) => {
 
 module.exports = {
   register,
-
   login,
-
   update,
-
   userInfo,
 };

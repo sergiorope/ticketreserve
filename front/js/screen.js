@@ -5,8 +5,8 @@ function getQueryParam(param) {
 
 
 const datosSerializados = getQueryParam("datos");
-const green_seat = "../../seats-icons/green-seat.png";
-const red_seat = "../../seats-icons/red-seat.png";
+const green_seat = "../seats-icons/green-seat.png";
+const red_seat = "../seats-icons/red-seat.png";
 const sala = getQueryParam("sala");
 const salaName = getQueryParam("salaName");
 const proyeccionStr = getQueryParam("proyeccion");

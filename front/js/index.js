@@ -3,6 +3,9 @@ const userInfo = "http://localhost:3800/user/info";
 const token = localStorage.getItem("authToken");
 
 const welcomeContainer = document.getElementById("welcome");
+const reservationsContainer = document.getElementById("reservationsContainer");
+const filmContainer = document.querySelector(".filmContainer");
+
 const logContainer = document.getElementById("log");
 
 const titulo = document.querySelector("h1");
@@ -23,13 +26,25 @@ const list = async () => {
     });
 
     if (!response.ok) {
+
+      const error = document.createElement("p");
+
+      error.textContent = "No hay ninguna proyección actualmente.";
+      error.style.color = "red";
+      error.style.fontWeight = "bold";
+      error.style.marginTop = "10px";
+
+
+
+      filmContainer.appendChild(error);
+
       throw new Error("Network response was not ok");
     }
 
     const data = await response.json();
-    console.log(data);
 
-    const filmContainer = document.querySelector(".filmContainer");
+
+    
 
     data.projectionList.forEach((item) => {
       const contenedor = document.createElement("div");
@@ -121,13 +136,20 @@ const infoUser = async () => {
     }
 
     const dataResponse = await response.json();
+    const userId = dataResponse.userToken.id; 
 
     const welcome = document.createElement("a");
+    const recordreservation = document.createElement("a");
+
     const logout = document.createElement("a");
 
     welcome.className = "nav-link";
     welcome.href = "./user.html";
     welcome.textContent = "Bienvenido, " + dataResponse.userToken.name;
+
+    recordreservation.className = "nav-link";
+    recordreservation.textContent = "Historial de reservas";
+    recordreservation.href = `./reservationrecord.html?id_Usuario=${userId}`; 
 
     logout.className = "nav-link";
     logout.id = "logout";
@@ -135,6 +157,7 @@ const infoUser = async () => {
     logout.textContent = "Logout";
 
     welcomeContainer.appendChild(welcome);
+    reservationsContainer.appendChild(recordreservation);
     logContainer.appendChild(logout);
 
     logout.addEventListener("click", function (event) {

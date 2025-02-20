@@ -27,3 +27,20 @@ services:
       - 80:80
     depends_on:
       - mysql_db
+  ## SERVICIO DEL BACKEND ##
+  backend:
+    image: ticketreserve-backend
+    container_name: ticketreserve-backend
+    ports:
+      - 3800:3800
+    depends_on:
+      - mysql_db
+
+  ## SERVICIO DEL FRONTEND ##
+  frontend:
+    image: ticketreserve-frontend
+    container_name: ticketreserve-frontend
+    ports:
+      - 5000:80
+    depends_on:
+      - backend

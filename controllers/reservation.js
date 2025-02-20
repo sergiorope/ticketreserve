@@ -88,6 +88,63 @@ const listByProjections = async (req, res) => {
   }
 };
 
+
+const listByUsers = async (req, res) => {
+  try {
+    const { id_Usuario } = req.params; 
+
+    const listReservations = await reservation.findAll({
+      where: { id_Usuario },
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt",
+          "id_Usuario",
+          "id_Butaca",
+          "id_Proyeccion",
+        ],
+      },
+      include: [
+        {
+          model: user,
+          as: "usuario",
+          attributes: ["name"],
+        },
+        {
+          model: seat,
+          as: "butaca",
+          attributes: ["row", "column"],
+        },
+        {
+          model: projection,
+          as: "proyeccion",
+          attributes: ["horario"],
+        },
+      ],
+
+    });
+
+    if (!listReservations || listReservations.length === 0) {
+      return res.status(404).send({
+        status: "error",
+        message: "Todavia no tienes reservas",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: listReservations,
+    });
+
+  } catch (error) {
+    return res.status(500).send({
+      status: "error",
+      message: "Error interno del servidor",
+      error: error.message,
+    });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const userParams = jwt.decodeToken(req.body.token);
@@ -205,5 +262,6 @@ module.exports = {
   create,
   update,
   eliminacion,
-  listByProjections
+  listByProjections,
+  listByUsers
 };
