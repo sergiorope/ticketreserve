@@ -40,19 +40,19 @@ document
 
         throw new Error("La petición no obtuvo respuesta");
       }
+
+      const success = document.createElement("p");
+      success.textContent = "Se creó con éxito el usuario";
+      success.style.color = "green";
+      success.style.fontWeight = "bold";
+      success.style.marginTop = "10px";
+
+      containerMessage.appendChild(success);
+
+      setTimeout(() => {
+        containerMessage.removeChild(success);
+      }, 5000);
     };
 
-    const success = document.createElement("p");
-    success.textContent = errorMessage;
-    success.style.color = "green";
-    success.style.fontWeight = "bold";
-    success.style.marginTop = "10px";
-
-    containerMessage.appendChild(success);
-
-    setTimeout(() => {
-      containerMessage.removeChild(success);
-    }, 5000);
-
-    create();
+    create()
   });
