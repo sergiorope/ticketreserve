@@ -1,5 +1,4 @@
-🎬 Peliculas API - Sistema de Gestión de Películas, Valoraciones y Usuarios
-Esta API REST permite gestionar películas, valoraciones y usuarios utilizando Node.js y Express.
+🎬 TicketReserve - Sistema de Gestión de Butacas
 
 🎞️ PeliculaController - Gestión de Películas
 Controlador para manejar operaciones relacionadas con películas usando rutas Express y lógica asincrónica.
